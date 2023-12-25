@@ -22,7 +22,7 @@ In this lab, we observe various network traffic to and from Azure Virtual Machin
 <h2>Actions and Observations</h2>
 
 <p>
-First you will need to create two VMs on Azure. The first virtual machine will be created with Windows 10 and the second machine will be created with Linux(Ubuntu). Both will have two CPUs and they must be on the same VNET. Once they are created, connect to the Windows machine with Microsoft remote desktop and download Wireshark. Once Wireshark is downloaded, we will open the app and begin to filter for ICMP Traffic first. ICMP(Internet Control Message Protocol) is a network layer protocol used by network devices to diagnose network communication issues. Ping uses this protocol. Ping is used to test connectivity between different hosts on the internet or the network. When we filter Wireshark to only capture ICMP packets and ping the private IP address of our Linux machine we can visually see the packets on Wireshark. 
+First, you will need to create two VMs on Azure. The first virtual machine will be created with Windows 10 and the second machine will be created with Linux(Ubuntu). Both will have two CPUs and they must be on the same VNET. Once they are created, connect to the Windows machine with Microsoft remote desktop and download Wireshark. Once Wireshark is downloaded, we will open the app and begin to filter for ICMP Traffic first. ICMP(Internet Control Message Protocol) is a network layer protocol used by network devices to diagnose network communication issues. Ping uses this protocol. Ping is used to test connectivity between different hosts on the internet or the network. When you filter Wireshark to capture ICMP packets and ping the private IP address of the Ubuntu machine(10.0.0.5) you can see the results shown below in Wireshark. 
 </p>
 <p>
 <img src="https://i.imgur.com/iFYdOiV.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -30,7 +30,7 @@ First you will need to create two VMs on Azure. The first virtual machine will b
 <br />
 
 <p>
-We can inspect each individual packet and see the actual data that is being sent in each ping. The picture below demonstrates that. 
+You can inspect each packet and see the actual data that is being sent in each ping as shown below. 
 </p>
 <p>
 <img src="https://i.imgur.com/tIG5VAl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -38,7 +38,7 @@ We can inspect each individual packet and see the actual data that is being sent
 <br />
 
 <p>
-Next we will perpetually ping the Linux machine with the command ping -t. This will continually ping the machine until we decide to stop it, while the Windows machine is pinging the Linux machine we will go to the Linux machine and block inbound ICMP traffic on its firewall. Once we do that we will stop receiving echo replies from the Linux machine. We will block ICMP by creating a new Network Security Group on the Linux machine that will be set to block ICMP. We can allow traffic by allowing ICMP on the Linux Network Security Groups page on Azure. 
+In the next step, you will perpetually ping both virtual machines with the command ping -t(ping 10.0.0.5 -t). This will continually ping between both virtual machines until you decide to stop it. In the meantime, in the Linux virtual machine, we will block the inbound ICMP traffic on its firewall so the perpetual ping will stop. In Azure, you will go to the Ubuntu virtual machine's network security group and add a new security rule in inbound security rules. We will set the protocol to ICMP and make it deny anything that comes before the SSH rule. Once this is set, the Windows virtual machine will stop receiving echo replies from the Ubuntu machine and will get "Request Time Out" in Powershell.
 </p>
 <p>
 <img src="https://i.imgur.com/aTG3sxe.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -52,7 +52,7 @@ Next we will perpetually ping the Linux machine with the command ping -t. This w
 <br />
 
 <p>
-Next we will use our Windows machine to SSH to the Linux machine. SSH has no GUI, it just gives the user access to the machine's CLI. We will set the Wireshark filter to capture SSH packets only. When we SSH into the Linux machine with the command prompt "ssh labuser@10.0.0.5" we can see that Wireshark starts to immediately capture SSH packets.
+Next, you will filter Wireshark to observe SSH traffic. SSH(Secure Shell) just gives the user access to the machine's CLI(command line interface). Set the Wireshark filter to capture SSH traffic only. When you SSH into the Ubuntu machine with the command prompt "ssh labuser@10.0.0.5" you can see the SSH traffic in Wireshark.
 </p>
 <p>
 <img src="https://i.imgur.com/cPvIvNN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -60,7 +60,7 @@ Next we will use our Windows machine to SSH to the Linux machine. SSH has no GUI
 <br />
 
 <p>
-Next we will use Wireshark to filter for DHCP. DHCP is the Dynamic Host Configuration Protocol. This works on ports 67/68. It's used to assign IP addresses to machines. We will request a new IP address with the command "ipconfig /renew". Once we enter the command Wireshark will capture DHCP traffic. 
+Next, you will filter Wireshark to observe DHCP traffic. DHCP(Dynamic Host Configuration Protocol) is used to assign your VM a new IP address using the command"ipconfig /renew". This works on ports 67/68. Once you enter the command in Wireshark, you can see the DHCP traffic. 
 </p>
 <p>
 <img src="https://i.imgur.com/rJxQlMd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -68,7 +68,7 @@ Next we will use Wireshark to filter for DHCP. DHCP is the Dynamic Host Configur
 <br />
 
 <p>
-Time to filter DNS traffic. We will set Wireshark to filter DNS traffic. We will initiate DNS traffic by typing in the command "nslookup www.google.com" this command essentially asks our DNS server what is Google's IP address. 
+Next, you will filter Wireshark to observe DNS traffic. You will initiate DNS(Domain Name System) traffic by typing in the command "nslookup www.google.com." The "nslookup" command asks the DNS server what is Google's IP address. 
 </p>
 <p>
 <img src="https://i.imgur.com/fCLX8ZZ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -76,7 +76,7 @@ Time to filter DNS traffic. We will set Wireshark to filter DNS traffic. We will
 <br />
 
 <p>
-Lastly we will filter for RDP traffic. When we enter tcp.port==3389, traffic is spammed non-stop because we are using Remote Desktop Protocol to connect to our Virtual Machine
+Finally, you will filter for RDP(Remote Desktop Protocol) traffic in Wireshark. When you enter tcp.port==3389, the traffic is spammed non-stop because you are using Remote Desktop Protocol(a live stream) to connect to the Virtual Machine, therefore traffic is always transmitted.
 </p>
 <p>
 <img src="https://i.imgur.com/acWI0Hj.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
